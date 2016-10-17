@@ -1,0 +1,85 @@
+name: image_processing
+version: 0.1
+description: Basic set of image processing functions.
+author:
+  name: Kot Chaosu
+config:
+  syncano_api_key:
+    prompt: true
+endpoints:
+  remove_exif:
+    POST:
+      script: exif_cleaner
+      description: Removes EXIF metadata from image. Returns link to converted image.
+      parameters:
+        image_url:
+          type: string
+          description: URL of image to process.
+          example: "https://www.syncano.io/about-us-small-685af352f9caaf999eb28fb317ec9406.png"
+      response:
+        mimetype: application/json
+        examples:
+          - exit_code: 200
+            description: "Image converted successfully."
+            example: >
+              {
+                "status":"success",
+                "duration":320,
+                "result": {
+                  "stderr":"",
+                  "stdout":"https://syncano-v4-staging-storage-s3.s3.amazonaws.com/174106/2/c855ea3c37c1a013623581be3d54fe1f1d2d46f3.jpg"
+                  },
+                "executed_at":"2016-10-10T12:32:27.042265Z",
+                "id":1
+              }
+  convert_to_black_and_white:
+    POST:
+      script: black_and_white
+      description: Converts image to black and white. Returns link to converted image.
+      parameters:
+        image_url:
+          type: string
+          description: URL of image to process.
+      response:
+        mimetype: application/json
+  convert_to_grayscale:
+    POST:
+      script: black_and_white
+      description: Converts image to black and white. Returns link to converted image.
+      parameters:
+        image_url:
+          type: string
+          description: URL of image to process.
+      response:
+        mimetype: application/json
+  convert_to_sepia:
+    POST:
+      script: sepia
+      description: Converts image color to sepia. Returns link to converted image.
+      parameters:
+        image_url:
+          type: string
+          description: URL of image to process.
+      response:
+        mimetype: application/json
+dependencies:
+  scripts:
+    black_and_white:
+      runtime_name: python_library_v5.0
+      file: scripts/black_and_white.py
+    grayscale:
+      runtime_name: python_library_v5.0
+      file: scripts/grayscale.py
+    sepia:
+      runtime_name: python_library_v5.0
+      file: scripts/sepia.py
+    exif_cleaner:
+      runtime_name: python_library_v5.0
+      file: scripts/exif_cleaner.py
+  classes:
+    image:
+      schema:
+        - name: title
+          type: string
+        - name: image
+          type: file
